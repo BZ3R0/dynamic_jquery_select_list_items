@@ -1,0 +1,258 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dynamic jQuery SelectListItems</title>
+  <meta name="description" content="Select List Items - jQuery Plugin">
+  <link href="http://www.jqueryscript.net/css/jquerysctipttop.css" rel="stylesheet" type="text/css">
+  <script src="http://code.jquery.com/jquery-1.12.4.min.js"></script>
+  <script src="http://netdna.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+  <script src="js/jquery.selectlistactions.js"></script>
+
+  <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/site.css">
+
+  <!--[if lt IE 9]>
+  <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+</head>
+
+<body>
+  <div class="container">
+    <div class="row style-select">
+      <div class="col-md-12">
+        <div class="subject-info-box-1">
+          <!-- Bussiness Proccess -->
+          <label>Bussiness Proccess</label>
+          <select multiple class="form-control" id="lstBox1">
+            <option value="012">Adm/Fin</option>
+            <option value="456">Technical</option>
+            <option value="698">Dev</option>
+            <option value="856">Alone</option>
+            <option value="789">Commercial</option>
+          </select>
+        </div>
+
+        <div class="subject-info-arrows text-center">
+          <br /><br />
+          <input type='button' id='btnAllRight' value='>>' class="btn btn-default" /><br />
+          <input type='button' id='btnRight' value='>' class="btn btn-default" /><br />
+          <input type='button' id='btnLeft' value='<' class="btn btn-default" /><br />
+          <input type='button' id='btnAllLeft' value='<<' class="btn btn-default" />
+
+        </div>
+
+        <div class="subject-info-box-2">
+          <label>Selected Bussiness</label>
+          <select multiple class="form-control" id="lstBox2">
+          </select>
+        </div>
+
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <h1>-------------------------------------------------------------------------</h1>
+    <div id="fabrica" class="row style-select">
+      <div class="col-md-6">
+        <!-- Systems/Services -->
+        <label class="control-label">Services/Systems</label>
+        <select multiple class="form-control" id="lista_servicos">
+          <option value="123">Spreadsheets</option>
+          <option value="457">SIGE Cloud</option>
+          <option value="890">OTRS</option>
+          <option value="654">ERP</option>
+          <option value="998">Apex One</option>
+          <option value="997">HES</option>
+        </select>
+      </div>
+      <div class="col-md-6" id="dinamic_1">
+      </div>
+    </div>
+    <p>&nbsp;</p>
+    <h1>-------------------------------------------------------------------------</h1>
+    <div id="fabrica2" class="row style-select">
+      <div class="col-md-6">
+        <!-- Assets -->
+        <label class="control-label">Assets</label>
+        <select multiple class="form-control" id="lista_ativos">
+          <option value="996">Firewall</option>
+          <option value="995">Access Point</option>
+          <option value="994">Switch</option>
+          <option value="993">Gateway</option>
+        </select>
+      </div>
+      <div class="col-md-6" id="dinamic_2">
+      </div>
+    </div>
+    <p>&nbsp;</p>
+
+    <h1>-------------------------------------------------------------------------</h1>
+    <div id="fabrica3" class="row style-select">
+      <div class="col-md-6">
+        <!-- Devices -->
+        <label class="control-label">Devices</label>
+        <select multiple class="form-control" id="lista_computadores">
+          <option value="999">192.168.0.1</option>
+          <option value="777">192.168.0.2</option>
+          <option value="666">10.0.0.1</option>
+          <option value="555">172.16.0.1</option>
+          <option value="444">169.254.0.1</option>
+        </select>
+      </div>
+      <div class="col-md-6" id="dinamic_3">
+      </div>
+    </div>
+    <p>&nbsp;</p>
+
+  </div>
+
+  <script>
+    function insert(from, to, type, isfinal) {
+      $('select').moveToList(from, to, type, isfinal);
+      // e.preventDefault();
+    }
+
+    function remove_selected_rows(SourceList) {
+      // Remove the selected elements/boxes and move the selected items to unselected box
+      var sourceListOption = $(SourceList + ' option:selected'); // Get selected items in bussiness proccess box
+      sourceListOption.each(function(){
+        /* Below are created aux variable to removing item in the lower level before remove from its level */
+        var lvl = 1;
+        var newSourceList = '#lvl_' + lvl + '_' + $(this).val();
+        var newSourceOptions = $(newSourceList + ' option');
+        var newSourceListName = newSourceList.substring(newSourceList.lastIndexOf('#') + 1, newSourceList.length);
+        /* end aux variable */
+        remove_lvl_1(newSourceOptions, lvl, newSourceListName); // Remove items from level 1 (system/service) applying its rules
+        $('#row_'+$(this).val()).remove(); // Remove the box
+      })
+    }
+
+    function remove_all_rows() {
+      // Remove all boxes already added
+      // Get all ids that matches with row_['bla'] and then remove the boxes
+      var sourceDinamic = $("[id^='row_']");
+      sourceDinamic.each(function() {
+        var id = '#' + $(this)[0].id;
+        $(id).remove(); // Remove the box
+      });
+    }
+
+    function remove(sourceList, tipo = null) {
+      // tipo 1 = selected items
+      // tipo 2 = all items
+      // A box can be deleted if and only if no one uses it
+      if (tipo === 1) {
+        sourceListOption = $(sourceList + ' option:selected');
+      } else {
+        sourceListOption = $(sourceList + ' option');
+      }
+
+      // sourceListOption are the selected items
+      // souceListName is the id name without the # symbol
+      var sourceListName = sourceList.substring(sourceList.lastIndexOf('#') + 1, sourceList.length);
+      var lvl = sourceList.substring(5, 6);
+      if (lvl == "1") {
+        remove_lvl_1(sourceListOption, lvl, sourceListName);
+      } else if (lvl == "2") {
+        remove_lvl_2(sourceListOption, lvl, sourceListName);
+      } else if (lvl == "3") {
+        remove_lvl_3(sourceListOption, sourceListName);
+      };
+
+      /*sourceListOption.each(function(){
+      	$('#row'+$(this).val()).remove();
+      	sourceListOption.remove();
+      });
+      //$('#row'+id).remove();
+      if (sourceListOption.length == 0) {
+      			alert("Nenhum item selecionado para remover");
+      }*/
+    }
+
+
+    function remove_lvl_3(sourceListOption, sourceListName) {
+      // Remove seleted item from the current box
+      sourceListOption.each(function() {
+        //$( 'select[id*=lvl_2_123] option[value=' + $(this).val()  + ']');
+        var el = $('select[id*=' + sourceListName + '] option[value=' + $(this).val() + ']');
+        el.remove();
+      });
+    }
+
+    function remove_lvl_2(sourceListOption, lvl, sourceListName) {
+      // Remove the box in level 2 (Assets) after call function remove_lvl_3() to remove items in the box
+      sourceListOption.each(function() {
+        // Verify if the selected options/assets are in others assets.
+        // qtd is a variable which returns the quantity times where the element we desire to remove apear in his level
+        var qtd = $('select[id*=lvl_' + lvl + '] option[value=' + $(this).val() + ']').length;
+
+        // el is the selected element we desire to remove
+        var el = $('select[id*=' + sourceListName + '] option[value=' + $(this).val() + ']');
+        // qtd == 1 means the element el is not used anywhere in his level so its box can be removed
+        if (qtd == 1) {
+          $('#row_' + $(this).val()).remove(); // Remove the box
+        }
+        remove_lvl_3(el, sourceListName); // Remove the selected element
+      });
+    }
+
+    function remove_lvl_1(sourceListOption, lvl, sourceListName) {
+      sourceListOption.each(function() {
+        // qtd is a variable which returns the quantity times where the element we desire to remove apear in his level
+        var qtd = $('select[id*=lvl_' + lvl + '] option[value=' + $(this).val() + ']').length;
+
+        /* Below are created aux variable to removing item in the lower level before remove from its level */
+        var lvl2 = 2;
+        var sourceListNew = '#lvl_' + lvl2 + '_' + $(this).val();
+        var sourceListOpt = $(sourceListNew + ' option');
+        var sourceListNm = sourceListNew.substring(sourceListNew.lastIndexOf('#') + 1, sourceListNew.length);
+        /* end aux variables */
+
+        // qtd == 1 means the selected element is not used anywhere in his level so its box can be removed
+        if (qtd == 1) {
+          // remove items in the Assets level and remove Devices boxes because qtd==1, these assets are removed and there is no more any in this level (system/service)
+          remove_lvl_2(sourceListOpt, lvl2, sourceListNm);
+          // Remove the box after remove all items related in the lower level
+          var id = '#row_' + $(this).val();
+          $(id).remove(); // Remove the box
+        }
+        // el is the element we desire to remove
+        var el = $('select[id*=' + sourceListName + '] option[value=' + $(this).val() + ']');
+        remove_lvl_3(el, sourceListName); // Remove the selected element
+      });
+    }
+
+
+
+    $('#btnRight').click(function(e) {
+      // Add selected items from level 0
+      $('select').moveToList('lstBox1', 'lstBox2', 1, 1);
+      e.preventDefault();
+    });
+
+    $('#btnAllRight').click(function(e) {
+      // Add all itens from level 0
+      $('select').moveToList('lstBox1', 'lstBox2', 2, 1);
+      e.preventDefault();
+    });
+
+    $('#btnLeft').click(function(e) {
+      // Remove selected items from level 0 (Bussiness Proccess)
+      remove_selected_rows('#lstBox2');
+      $('select').moveToListAndDelete('#lstBox2', '#lstBox1');
+      e.preventDefault();
+    });
+
+    $('#btnAllLeft').click(function(e) {
+      // Remove all items from level 0 (Bussiness Proccess)
+      remove_all_rows();
+      $('select').moveAllToListAndDelete('#lstBox2', '#lstBox1');
+      e.preventDefault();
+    });
+  </script>
+</body>
+
+</html>

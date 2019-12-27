@@ -27,7 +27,7 @@ We are using the same files in **Example** folder Esau provided in his repositor
 
 The examples included are responsive and will look good in desktop as well as mobile.
 
-For running the example just run the ```html demo.html``` in your respective browser.
+For running the example just run the ```demo.html``` in your respective browser.
 
 <!-- Take a look at the [JSFiddle](http://jsfiddle.net/nzdak7aL/1/) for quick view -->
 

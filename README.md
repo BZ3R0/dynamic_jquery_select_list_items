@@ -4,6 +4,7 @@ jQuery.SelectListActions is a jQuery plugin that gives you several actions to pe
 Based on repository by Esau Silva https://github.com/esausilva/jquery.selectlistactions.js we updated some functions and let dynamic.
 
 We updated what Esau Silva developed with these news features:
+
 In our concept an item is a list and a list is an item.
 
 * Move selected item(s) up or down a list - (Removed function)

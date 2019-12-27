@@ -1,4 +1,4 @@
-# jQuery Dynamic Select List Items using jQuery.SelectListActions
+# Dynamic jQuery SelectListItems using jQuery.SelectListActions
 
 jQuery.SelectListActions is a jQuery plugin that gives you several actions to perform with Select lists.
 Based on repository by Esau Silva https://github.com/esausilva/jquery.selectlistactions.js we updated some functions and let dynamic.
